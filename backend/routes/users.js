@@ -22,6 +22,11 @@ router.post('/', async (req, res) => {
       if (displayName) existingUserDifferentProvider.displayName = displayName;
       if (phoneNumber) existingUserDifferentProvider.phoneNumber = phoneNumber;
       
+      // Keep existing userData if any
+      if (!existingUserDifferentProvider.userData) {
+        existingUserDifferentProvider.userData = {};
+      }
+      
       await existingUserDifferentProvider.save();
       return res.status(200).json(existingUserDifferentProvider);
     }
@@ -30,10 +35,10 @@ router.post('/', async (req, res) => {
     const existingUser = await User.findOne({ firebaseUID });
     
     if (existingUser) {
-      // Update existing user
+      // Update existing user - only update fields that are provided
       if (email) existingUser.email = email;
-      if (displayName) existingUser.displayName = displayName;
-      if (phoneNumber) existingUser.phoneNumber = phoneNumber;
+      if (displayName !== undefined) existingUser.displayName = displayName;
+      if (phoneNumber !== undefined) existingUser.phoneNumber = phoneNumber;
       if (authProvider) existingUser.authProvider = authProvider;
       
       await existingUser.save();
@@ -46,7 +51,8 @@ router.post('/', async (req, res) => {
       email,
       displayName: displayName || '',
       phoneNumber: phoneNumber || '',
-      authProvider
+      authProvider,
+      userData: {}
     });
     
     await newUser.save();
