@@ -55,8 +55,9 @@ const PhoneSignUp = () => {
               onChange={setNumber}
               placeholder="Enter Phone Number"
             />
-            <div id="recaptcha-container"></div>
+            
           </Form.Group>
+          <div id="recaptcha-container"></div>
           <div className="button-right">
             <Link to="/">
               <Button variant="secondary">Cancel</Button>

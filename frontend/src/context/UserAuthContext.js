@@ -218,14 +218,24 @@ export function UserAuthContextProvider({ children }) {
   }
 
   function setUpRecaptha(number) {
-    const recaptchaVerifier = new RecaptchaVerifier(
-      "recaptcha-container",
-      {},
-      auth
-    );
-    recaptchaVerifier.render();
-    return signInWithPhoneNumber(auth, number, recaptchaVerifier);
+    if (!window.recaptchaVerifier) {
+      const container = document.getElementById("recaptcha-container");
+      if (!container) {
+        throw new Error("reCAPTCHA container not found in DOM");
+      }
+  
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        "recaptcha-container",
+        { size: "invisible" },
+        auth
+      );
+      window.recaptchaVerifier.render();
+    }
+  
+    return signInWithPhoneNumber(auth, number, window.recaptchaVerifier);
   }
+  
+  
 
   // Function to update user data in MongoDB
   async function updateUserData(userData) {
